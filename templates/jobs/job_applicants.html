@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Applicants for {{ job.title }}</h2>
+<p class="job-meta">
+  {{ job.company_name|default:job.employer.company|default:job.employer.username }}
+  &bull; {{ job.location|default:"Anywhere" }}
+</p>
+
+{% if applications %}
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Applicant</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Applied At</th>
+          <th>Resume</th>
+          <th>Update</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for app in applications %}
+          <tr>
+            <td>{{ app.applicant.username }}</td>
+            <td>{{ app.applicant.email }}</td>
+            <td>
+              <span class="tag-pill primary">{{ app.get_status_display }}</span>
+            </td>
+            <td>{{ app.applied_at }}</td>
+            <td>
+              <a href="{% url 'jobs:download_resume' app.pk %}">Download</a>
+            </td>
+            <td>
+              <a href="{% url 'jobs:update_application_status' app.pk %}">Change Status</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <p>No applications yet for this job.</p>
+{% endif %}
+
+<p style="margin-top:10px;">
+  <a href="{% url 'jobs:employer_jobs' %}" class="btn btn-outline">← Back to My Jobs</a>
+</p>
+{% endblock %}

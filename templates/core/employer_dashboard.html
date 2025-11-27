@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Employer Dashboard</h2>
+
+<p>Welcome, {{ user.username }}{% if user.company %} ({{ user.company }}){% endif %}.</p>
+
+<div class="dashboard-grid">
+  <div class="card">
+    <h3>Post a Job</h3>
+    <p>Create a new job listing and reach applicants.</p>
+    <a href="{% url 'jobs:create' %}" class="btn btn-primary">Post Job</a>
+  </div>
+
+  <div class="card">
+    <h3>My Jobs</h3>
+    <p>Manage your job listings and review performance.</p>
+    <a href="{% url 'jobs:employer_jobs' %}" class="btn btn-outline">View My Jobs</a>
+  </div>
+
+  <div class="card">
+    <h3>Browse Public Jobs</h3>
+    <p>See how your postings appear alongside others.</p>
+    <a href="{% url 'jobs:list' %}" class="btn btn-outline">Browse Jobs</a>
+  </div>
+</div>
+{% endblock %}

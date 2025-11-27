@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-card">
+  <h2 class="form-title">Create an Account</h2>
+
+
+  <div class="role-toggle">
+    <button type="button" class="role-pill active" data-role="applicant">Applicant</button>
+    <button type="button" class="role-pill" data-role="employer">Employer</button>
+    <button type="button" class="role-pill" data-role="admin">Admin</button>
+  </div>
+
+  <form method="post" class="form-grid">
+    {% csrf_token %}
+
+
+    <input type="hidden" name="role" id="role-input" value="applicant">
+
+    <div>
+      <label>Username</label>
+      <input type="text" name="username" value="{{ username|default:'' }}" required>
+    </div>
+
+    <div>
+      <label>Email</label>
+      <input type="email" name="email" value="{{ email|default:'' }}" required>
+    </div>
+
+    <div>
+      <label>Password</label>
+      <input type="password" name="password" required>
+    </div>
+
+
+    <div id="applicant-fields">
+      <label>Professional Summary</label>
+      <textarea name="summary" rows="3">{{ summary|default:'' }}</textarea>
+
+      <label>Key Skills (comma separated)</label>
+      <input type="text" name="skills" value="{{ skills|default:'' }}">
+    </div>
+
+
+    <div id="employer-fields" style="display:none;">
+      <label>Company Name</label>
+      <input type="text" name="company" value="{{ company|default:'' }}">
+    </div>
+
+
+    <div id="admin-fields" style="display:none;">
+      <label>Admin Invite Code</label>
+      <input type="text" name="admin_code" value="{{ admin_code|default:'' }}">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Sign up</button>
+  </form>
+
+  <p style="margin-top:8px; font-size:0.9rem;">
+    Already have an account?
+    <a href="{% url 'login' %}">Login</a>
+  </p>
+</div>
+
+<script>
+  (function() {
+    const roleInput = document.getElementById("role-input");
+    const pills = document.querySelectorAll(".role-pill");
+
+    const applicantFields = document.getElementById("applicant-fields");
+    const employerFields = document.getElementById("employer-fields");
+    const adminFields = document.getElementById("admin-fields");
+
+    function setRole(role) {
+      roleInput.value = role;
+
+   
+      pills.forEach(btn => {
+        if (btn.dataset.role === role) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+
+     
+      applicantFields.style.display = (role === "applicant") ? "block" : "none";
+      employerFields.style.display  = (role === "employer") ? "block" : "none";
+      adminFields.style.display     = (role === "admin") ? "block" : "none";
+    }
+
+    pills.forEach(btn => {
+      btn.addEventListener("click", function() {
+        setRole(this.dataset.role);
+      });
+    });
+
+
+    setRole(roleInput.value || "applicant");
+  })();
+</script>
+{% endblock %}

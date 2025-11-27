@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-card">
+  <h2 class="form-title">
+    {% if mode == "edit" %}Edit Job{% else %}Post a New Job{% endif %}
+  </h2>
+
+  <form method="post" class="form-grid">
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+
+    {% for field in form %}
+      <div>
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+          <div style="font-size:0.8rem; color:#6b7280;">{{ field.help_text }}</div>
+        {% endif %}
+        {% for error in field.errors %}
+          <div style="color:#b91c1c; font-size:0.8rem;">{{ error }}</div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">
+      {% if mode == "edit" %}Save Changes{% else %}Create Job{% endif %}
+    </button>
+  </form>
+</div>
+{% endblock %}

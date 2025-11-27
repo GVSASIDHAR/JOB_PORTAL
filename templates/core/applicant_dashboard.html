@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Applicant Dashboard</h2>
+
+<div class="dashboard-grid">
+  <div class="card">
+    <h3>Browse Jobs</h3>
+    <p>Find opportunities that match your skills and interests.</p>
+    <a href="{% url 'jobs:list' %}" class="btn btn-primary">Browse Jobs</a>
+  </div>
+
+  <div class="card">
+    <h3>My Applications</h3>
+    <p>Track the status of roles you have applied for.</p>
+    <a href="{% url 'jobs:my_applications' %}" class="btn btn-outline">View Applications</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Browse Jobs</h2>
+
+<div class="filters-card">
+  <form method="get">
+    <div class="filters-row">
+      <div>
+        <label>Keyword</label>
+        <input type="text" name="q" placeholder="Title, description..."
+               value="{{ q|default:'' }}">
+      </div>
+      <div>
+        <label>Location</label>
+        <input type="text" name="location" placeholder="City, country..."
+               value="{{ location|default:'' }}">
+      </div>
+      <div>
+        <label>Job Type</label>
+        <select name="job_type">
+          <option value="">Any type</option>
+          <option value="full_time" {% if job_type == "full_time" %}selected{% endif %}>Full Time</option>
+          <option value="part_time" {% if job_type == "part_time" %}selected{% endif %}>Part Time</option>
+          <option value="internship" {% if job_type == "internship" %}selected{% endif %}>Internship</option>
+          <option value="contract" {% if job_type == "contract" %}selected{% endif %}>Contract</option>
+          <option value="remote" {% if job_type == "remote" %}selected{% endif %}>Remote</option>
+          <option value="hybrid" {% if job_type == "hybrid" %}selected{% endif %}>Hybrid</option>
+        </select>
+      </div>
+      <div>
+        <label>Skills</label>
+        <input type="text" name="skills" placeholder="Python, Django"
+               value="{{ skills|default:'' }}">
+      </div>
+      <div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Search</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+{% if jobs %}
+  <ul class="job-list">
+    {% for j in jobs %}
+      <li class="job-card">
+        <div class="job-card-header">
+          <a href="{{ j.get_absolute_url }}" class="job-title">{{ j.title }}</a>
+          <span class="job-meta">
+            {{ j.company_name|default:j.employer.company|default:j.employer.username }}
+          </span>
+        </div>
+
+        <div class="job-meta">
+          {{ j.location|default:"Anywhere" }} &bull;
+          {{ j.get_job_type_display }}
+          {% if not j.is_active %}
+            <span class="tag-pill danger">Closed</span>
+          {% endif %}
+        </div>
+
+        <div class="job-tags">
+          Skills: {{ j.skills|default:"Not specified" }} &bull;
+          Deadline: {{ j.deadline }}
+        </div>
+
+        <div class="job-actions">
+          <a href="{{ j.get_absolute_url }}" class="btn btn-outline">View Details</a>
+
+          {% if not request.user.is_authenticated and j.is_active %}
+            <a href="{% url 'signup' %}?next={{ j.get_absolute_url }}" class="btn btn-primary">
+              Apply Now
+            </a>
+          {% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <div class="pagination">
+    {% if jobs.has_previous %}
+      <a href="?page={{ jobs.previous_page_number }}">Prev</a>
+    {% endif %}
+    <span>Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}</span>
+    {% if jobs.has_next %}
+      <a href="?page={{ jobs.next_page_number }}">Next</a>
+    {% endif %}
+  </div>
+{% else %}
+  <p>No jobs match your filters.</p>
+{% endif %}
+{% endblock %}

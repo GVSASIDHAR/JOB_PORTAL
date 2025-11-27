@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="auth-page-wrapper">
+  <div class="auth-container {% if mode == 'signup' %}right-panel-active{% endif %}" id="authContainer">
+
+    <!-- SIGN UP FORM -->
+    <div class="form-container sign-up-container">
+      <form method="post" action="{% url 'signup' %}" class="form-grid">
+        {% csrf_token %}
+        <h2 class="form-title">Create Account</h2>
+        <div class="role-toggle">
+          <button type="button" class="role-pill active" data-role="applicant">Applicant</button>
+          <button type="button" class="role-pill" data-role="employer">Employer</button>
+          <button type="button" class="role-pill" data-role="admin">Admin</button>
+        </div>
+
+        <input type="hidden" name="role" id="role-input" value="applicant">
+
+        <div>
+          <label>Name</label>
+          <input type="text" name="username" value="{{ signup_form.username.value|default:'' }}" required>
+        </div>
+
+        <div>
+          <label>Email</label>
+          <input type="email" name="email" value="{{ signup_form.email.value|default:'' }}" required>
+        </div>
+
+        <div>
+          <label>Password</label>
+          <input type="password" name="password" required>
+        </div>
+
+        <div id="applicant-fields">
+          <label>Professional Summary</label>
+          <textarea name="summary" rows="3">{{ signup_form.summary.value|default:'' }}</textarea>
+
+          <label>Key Skills (comma separated)</label>
+          <input type="text" name="skills" value="{{ signup_form.skills.value|default:'' }}">
+        </div>
+
+        <div id="employer-fields" style="display:none;">
+          <label>Company Name</label>
+          <input type="text" name="company" value="{{ signup_form.company.value|default:'' }}">
+        </div>
+
+        <div id="admin-fields" style="display:none;">
+          <label>Admin Invite Code</label>
+          <input type="text" name="admin_code" value="{{ signup_form.admin_code.value|default:'' }}">
+        </div>
+
+        {# show any signup errors #}
+        {% if signup_form.errors %}
+          <div class="alert alert-error">
+            Please fix the errors in the form.
+          </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary" style="margin-top:8px;">Sign Up</button>
+      </form>
+    </div>
+
+    <div class="form-container sign-in-container">
+      <form method="post" action="{% url 'login' %}" class="form-grid">
+        {% csrf_token %}
+        <h2 class="form-title">Sign in</h2>
+
+        <div>
+          <label>Username</label>
+          <input type="text" name="username" value="{{ login_form.username.value|default:'' }}" required>
+        </div>
+
+        <div>
+          <label>Password</label>
+          <input type="password" name="password" required>
+        </div>
+
+        <div>
+          <label>Role</label>
+          <select name="role" required>
+            <option value="applicant" {% if login_form.role.value == "applicant" %}selected{% endif %}>Applicant</option>
+            <option value="employer" {% if login_form.role.value == "employer" %}selected{% endif %}>Employer</option>
+            <option value="admin" {% if login_form.role.value == "admin" %}selected{% endif %}>Admin</option>
+          </select>
+        </div>
+
+        {% if login_form.errors %}
+          <div class="alert alert-error">
+            Please check your username, password or role.
+          </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary" style="margin-top:8px;">Sign In</button>
+      </form>
+    </div>
+
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h2>Welcome Back!</h2>
+          <p>To keep connected with us please login with your personal info.</p>
+          <button class="btn ghost-btn" id="showSignIn">SIGN IN</button>
+        </div>
+        <div class="overlay-panel overlay-right">
+          <h2>Hello, Friend!</h2>
+          <p>Enter your personal details and start your journey with us.</p>
+          <button class="btn ghost-btn" id="showSignUp">SIGN UP</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  (function() {
+    const container = document.getElementById("authContainer");
+    const showSignUp = document.getElementById("showSignUp");
+    const showSignIn = document.getElementById("showSignIn");
+
+
+    showSignUp.addEventListener("click", function () {
+      container.classList.add("right-panel-active");
+    });
+
+    showSignIn.addEventListener("click", function () {
+      container.classList.remove("right-panel-active");
+    });
+
+
+    const roleInput = document.getElementById("role-input");
+    const pills = document.querySelectorAll(".role-pill");
+    const applicantFields = document.getElementById("applicant-fields");
+    const employerFields  = document.getElementById("employer-fields");
+    const adminFields     = document.getElementById("admin-fields");
+
+    function setRole(role) {
+      roleInput.value = role;
+      pills.forEach(btn => btn.classList.toggle("active", btn.dataset.role === role));
+      applicantFields.style.display = (role === "applicant") ? "block" : "none";
+      employerFields.style.display  = (role === "employer") ? "block" : "none";
+      adminFields.style.display     = (role === "admin") ? "block" : "none";
+    }
+
+    pills.forEach(btn => {
+      btn.addEventListener("click", () => setRole(btn.dataset.role));
+    });
+
+
+    setRole(roleInput.value || "applicant");
+  })();
+</script>
+
+{% endblock %}

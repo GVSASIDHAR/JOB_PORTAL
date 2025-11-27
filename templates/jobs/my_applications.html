@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>My Applications</h2>
+
+{% if applications %}
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Job</th>
+          <th>Company</th>
+          <th>Status</th>
+          <th>Applied At</th>
+          <th>Updated At</th>
+          <th>Resume</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for app in applications %}
+          <tr>
+            <td>
+              <a href="{{ app.job.get_absolute_url }}">{{ app.job.title }}</a>
+            </td>
+            <td>
+              {{ app.job.company_name|default:app.job.employer.company|default:app.job.employer.username }}
+            </td>
+            <td>
+              <span class="tag-pill primary">{{ app.get_status_display }}</span>
+            </td>
+            <td>{{ app.applied_at }}</td>
+            <td>{{ app.updated_at }}</td>
+            <td>
+              <a href="{% url 'jobs:download_resume' app.pk %}">Download</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <p>You haven’t applied to any jobs yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-card">
+  <h2 class="form-title">Update Application Status</h2>
+
+  <p class="job-meta">
+    Applicant: <strong>{{ application.applicant.username }}</strong><br>
+    Job: <a href="{{ application.job.get_absolute_url }}">{{ application.job.title }}</a><br>
+    Company: {{ application.job.company_name|default:application.job.employer.company|default:application.job.employer.username }}
+  </p>
+
+  <form method="post" class="form-grid">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div>
+      <label for="{{ form.status.id_for_label }}">Status</label>
+      {{ form.status }}
+      {% for error in form.status.errors %}
+        <div style="color:#b91c1c; font-size:0.8rem;">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+
+  <p style="margin-top:8px;">
+    <a href="{% url 'jobs:job_applicants' application.job.pk %}" class="btn btn-outline">
+      ← Back to Applicants
+    </a>
+  </p>
+</div>
+{% endblock %}

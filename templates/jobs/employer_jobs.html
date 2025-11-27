@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>My Job Listings</h2>
+
+<div style="margin-bottom:12px;">
+  <a href="{% url 'jobs:create' %}" class="btn btn-primary">+ Post a New Job</a>
+</div>
+
+{% if jobs %}
+  <ul class="job-list">
+    {% for j in jobs %}
+      <li class="job-card">
+        <div class="job-card-header">
+          <span class="job-title">{{ j.title }}</span>
+          <span class="job-meta">
+            {{ j.company_name|default:user.company|default:user.username }}
+          </span>
+        </div>
+
+        <div class="job-meta">
+          {{ j.location|default:"Anywhere" }} &bull;
+          {{ j.get_job_type_display }}
+          {% if not j.is_active %}
+            <span class="tag-pill danger">Closed</span>
+          {% endif %}
+        </div>
+
+        <div class="job-tags">
+          Deadline: {{ j.deadline }} &bull;
+          Skills: {{ j.skills|default:"Not specified" }}
+        </div>
+
+        <div class="job-actions">
+          <a href="{{ j.get_absolute_url }}" class="btn btn-outline">View</a>
+          <a href="{% url 'jobs:edit' j.pk %}" class="btn btn-outline">Edit</a>
+          <a href="{% url 'jobs:job_applicants' j.pk %}" class="btn btn-primary">View Applicants</a>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>You haven’t posted any jobs yet.</p>
+{% endif %}
+{% endblock %}
