@@ -17,7 +17,7 @@ def _safe_send_mail(subject: str, message: str, recipient_list: list[str]) -> No
         message=message,
         from_email=from_email,
         recipient_list=recipient_list,
-        fail_silently=True,  # in dev we don't want crashes on email issues
+        fail_silently=False,  # in dev we don't want crashes on email issues
     )
 
 

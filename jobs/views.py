@@ -107,7 +107,10 @@ def apply_to_job(request, pk):
             app.applicant = request.user
             app.save()
 
-            send_application_submitted_email(app)
+            try:
+                send_application_submitted_email(app)
+            except Exception as e:
+                print("Email failed:", e)
 
             messages.success(request, "Application submitted successfully.")
             return redirect("jobs:my_applications")
@@ -155,7 +158,10 @@ def update_application_status(request, app_id):
         form = ApplicationStatusForm(request.POST, instance=app)
         if form.is_valid():
             form.save()
-            send_application_status_changed_email(app)
+            try:
+                send_application_status_changed_email(app)
+            except Exception as e:
+                print("Email failed:", e)
             messages.success(request, "Application status updated.")
             return redirect("jobs:job_applicants", pk=app.job.pk)
     else:
