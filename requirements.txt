@@ -1,7 +1,7 @@
+# force-render-rebuild-001
 asgiref==3.10.0
 Django==5.2.8
 gunicorn==24.1.1
-mysqlclient==2.2.7
 packaging==26.0
 python-dotenv==1.2.1
 sqlparse==0.5.3
