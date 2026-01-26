@@ -16,9 +16,8 @@ env/
 pip-log.txt
 pip-delete-this-directory.txt
 
+# Django migrations (KEEP THESE)
 */migrations/__pycache__/
-*/migrations/*.py
-!*/migrations/__init__.py
 
 db.sqlite3
 
